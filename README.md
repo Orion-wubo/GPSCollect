@@ -72,12 +72,13 @@ Java
 //关闭后台定位，参数为true时会移除通知栏，为false时不会移除通知栏，但是可以手动移除
 
 
-android 9.0上使用前台服务，需要添加权限
+# android 9.0上使用前台服务，需要添加权限
 
-<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-Android 10.0 开发须知
-更新时间：2020年03月05日
+# Android 10.0 开发须知
+
 1.在Android10.0系统上，当应用退到后台后为了保留对设备位置信息的访问权，需要在清单中声明服务类型为:android:foregroundServiceType="location"的前台服务或者添加后台定位权限android.permission.ACCESS_BACKGROUND_LOCATION。
 
 注意：个别厂商会对定制版本的机型做特别适配，例如华为手机会严格限制后台定位导致无法使用后台定位功能，开发者需要自行和厂商联系。
@@ -94,8 +95,8 @@ locationClient.disableBackgroundLocation(true);
 3、开启关闭后台定位接口只是提供一个前台服务通知栏并不具备开始、停止定位的功能，开启、停止定位请调用AMapLocationCLient的startLocation()和stopLocation()接口
 
 
-Android 11.0 开发须知
-更新时间：2020年08月19日
+# Android 11.0 开发须知
+
 1.新增单次访问权限
 在 Android 11 中，每当应用请求访问前台位置信息时，系统权限对话框都包含一个名为【仅限这一次】的选项，通过这一新选项，用户可以更好地控制应用何时有权访问位置信息。具体含义如下:
 
