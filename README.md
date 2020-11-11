@@ -4,7 +4,7 @@
 尝试使用 google定位 但是华为的设备不可以
 最终使用高德定位统一方式
 
-Android 8.0权限说明
+# Android 8.0权限说明
 最后更新时间: 2018年02月02日
 从Android 8.0开始系统为实现降低功耗，对后台应用获取用户位置信息频率进行了限制，每小时只允许更新几次位置信息，详细信息请参考官方说明。按照官方指引，如果要提高位置更新频率，需要后台应用提供一个前台服务通知告知。如果您需要自己参考官方指引来完成设置，可以参考之前我们提供的github示例。
 
@@ -112,17 +112,13 @@ d.如果用户撤消单次授权（例如在系统设置中撤消），无论您
 
 当用户下次打开应用并且应用中的某项功能请求访问位置信息、麦克风或摄像头时，系统会再次提示用户授予权限。
 
-location-android11-new2.png
-
 2.后台位置信息访问权限
 在搭载 Android 11 的设备上，如需启用后台位置信息访问权限，用户必须在设置页面上针对应用的位置权限设置【始终允许】选项。
 
-location-android11-new.png
 
 3.访问设备的位置和摄像头
 如果应用程序中的前台服务需要访问设备的位置和摄像头，请声明对应的服务，如下：
 
-<manifest>
-    ...
-    <service ... android:foregroundServiceType="location|camera"/>
-</manifest>
+	<manifest>
+	    <service ... android:foregroundServiceType="location|camera"/>
+	</manifest>
