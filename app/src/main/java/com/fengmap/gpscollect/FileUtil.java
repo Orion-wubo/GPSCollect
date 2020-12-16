@@ -1,12 +1,16 @@
 package com.fengmap.gpscollect;
 
+import android.content.Context;
 import android.os.Environment;
 
 import org.litepal.LitePal;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public class FileUtil {
@@ -31,12 +35,12 @@ public class FileUtil {
         for (int i = 0; i < all.size(); i++) {
             String info = all.get(i).getInfo();
             info = info + "\r\n";
-            write(file, info);
+            write(info);
         }
         LitePal.deleteAll(GpsInfo.class);
     }
 
-    private void write(File file, String content) {
+    public void write(String content) {
         FileWriter writer = null;
         try {
             // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
@@ -52,6 +56,32 @@ public class FileUtil {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public String readTextFromSDcard(Context context, String fileName) {
+        InputStreamReader inputStreamReader;
+        try {
+            inputStreamReader = new InputStreamReader(context.getAssets().open(fileName), "UTF-8");
+            if (inputStreamReader == null) {
+                return null;
+            }
+            BufferedReader bufferedReader = new BufferedReader(
+                    inputStreamReader);
+            String line;
+            StringBuilder stringBuilder = new StringBuilder();
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            inputStreamReader.close();
+            bufferedReader.close();
+            return stringBuilder.toString();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

@@ -23,9 +23,13 @@ import android.preference.PreferenceManager;
 
 import com.amap.api.location.AMapLocation;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 public class Utils {
 
@@ -85,9 +89,20 @@ public class Utils {
             float speed = location.getSpeed();
             float bearing = location.getBearing();
             String curTime = getCurTime();
-            String content =
-                    "时间：" + curTime + "；经度：" + longitude + "；纬度：" + latitude + "；类型：" + getLocationType(location.getLocationType()) + "；精度：" + accuracy + "；海拔：" + altitude + "；方位：" + bearing + "；速度：" + speed;
-            return content;
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("time", curTime);
+                obj.put("longitude", longitude);
+                obj.put("latitude", latitude);
+                obj.put("type",getLocationType(location.getLocationType()) );
+                obj.put("accuracy", accuracy);
+                obj.put("altitude", altitude);
+                obj.put("bearing", bearing);
+                obj.put("speed", speed);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return obj.toString()+"\r\n";
         }
     }
 
@@ -138,6 +153,6 @@ public class Utils {
         String result;
         result =
                 "时间: " + getCurTime() + ", ErrCode:" + location.getErrorCode() + ", errInfo:" + location.getErrorInfo();
-        return result;
+        return result+"\r\n";
     }
 }

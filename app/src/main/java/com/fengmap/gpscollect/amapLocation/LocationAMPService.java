@@ -35,6 +35,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
+import com.fengmap.gpscollect.FileUtil;
 import com.fengmap.gpscollect.GpsInfo;
 import com.fengmap.gpscollect.LocalBroadcastManager;
 import com.fengmap.gpscollect.googleLocation.LocationActivity;
@@ -103,12 +104,14 @@ public class LocationAMPService extends Service implements AMapLocationListener 
      */
     private Location mLocation;
     private AMapLocationUtil locationUtils;
+    private FileUtil fileUtil;
 
     public LocationAMPService() {
     }
 
     @Override
     public void onCreate() {
+        fileUtil = new FileUtil();
         locationUtils = new AMapLocationUtil(this, this);
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -131,10 +134,10 @@ public class LocationAMPService extends Service implements AMapLocationListener 
         boolean startedFromNotification = intent.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION, false);
 
         // We got here because the user decided to remove location updates from the notification.
-//        if (startedFromNotification) {
-//            removeLocationUpdates();
-//            stopSelf();
-//        }
+        if (startedFromNotification) {
+            removeLocationUpdates();
+            stopSelf();
+        }
         // Tells the system to not try to recreate the service after it has been killed.
         return START_NOT_STICKY;
     }
@@ -251,21 +254,24 @@ public class LocationAMPService extends Service implements AMapLocationListener 
     }
 
     private void onNewLocation(AMapLocation location) {
-        Log.e(TAG, "New location: " + location.getTime());
+        // 设置坐标类型为84坐标系
+        location.setCoordType(AMapLocation.COORD_TYPE_WGS84);
 
         if (location != null) {
             if (location.getErrorCode() == 0) {
                 //可在其中解析amapLocation获取相应内容。
                 String content = Utils.getLocationText(location);
-                GpsInfo gpsInfo = new GpsInfo();
-                gpsInfo.setInfo(content);
-                gpsInfo.save();
+//                GpsInfo gpsInfo = new GpsInfo();
+//                gpsInfo.setInfo(content);
+//                gpsInfo.save();
+                fileUtil.write(content);
             } else {
                 //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
                 String errorInfo = Utils.getErrorLocation(location);
-                GpsInfo gpsInfo = new GpsInfo();
-                gpsInfo.setInfo(errorInfo);
-                gpsInfo.save();
+//                GpsInfo gpsInfo = new GpsInfo();
+//                gpsInfo.setInfo(errorInfo);
+//                gpsInfo.save();
+                fileUtil.write(errorInfo);
             }
         }
         mLocation = location;

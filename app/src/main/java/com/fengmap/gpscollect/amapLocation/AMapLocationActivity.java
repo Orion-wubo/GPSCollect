@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -25,9 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.amap.api.location.AMapLocation;
 import com.fengmap.gpscollect.FileUtil;
-import com.fengmap.gpscollect.GpsInfo;
 import com.fengmap.gpscollect.LocalBroadcastManager;
-import com.fengmap.gpscollect.gpsLocation.LocationService;
 import com.fengmap.gpscollect.R;
 import com.fengmap.gpscollect.ShowSettingUtil;
 import com.fengmap.gpscollect.TimerUtil;
@@ -45,7 +44,6 @@ public class AMapLocationActivity extends AppCompatActivity {
     private TextView tv_status;
     private Switch mSwitch;
     private Button white_list, back_permission;
-    private LocationService.MyBinder myBinder;
     private ShowSettingUtil showSettingUtil;
     private FileUtil fileUtil;
     private LinearLayout pb;
@@ -201,38 +199,42 @@ public class AMapLocationActivity extends AppCompatActivity {
 
     private void close() {
         String s = "------------本次定位结束--------------";
-        GpsInfo info = new GpsInfo();
-        info.setInfo(s);
-        info.save();
+//        GpsInfo info = new GpsInfo();
+//        info.setInfo(s);
+//        info.save();
+        fileUtil.write(s+ "\r\n");
         mService.removeLocationUpdates();
         timerUtil.stop();
         tv_status.setText("停止定位");
         tv_info.setText("");
+        this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        pb.setVisibility(View.VISIBLE);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                fileUtil.getGpsInfo();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        pb.setVisibility(View.GONE);
-                        Toast.makeText(AMapLocationActivity.this, "获取完成，前往文件管理查找gpsCollection.txt文件查看",
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        }).start();
+//        pb.setVisibility(View.VISIBLE);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+////                fileUtil.getGpsInfo();
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        pb.setVisibility(View.GONE);
+//                        Toast.makeText(AMapLocationActivity.this, "获取完成，前往文件管理查找gpsCollection.txt文件查看",
+//                                Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }
+//        }).start();
     }
 
     private void open() {
         String s = "------------本次定位开始--------------";
-        GpsInfo info = new GpsInfo();
-        info.setInfo(s);
-        info.save();
+//        GpsInfo info = new GpsInfo();
+//        info.setInfo(s);
+//        info.save();
+        fileUtil.write(s+ "\r\n");
         mService.requestLocationUpdates();
         timerUtil.start();
+        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
