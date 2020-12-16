@@ -15,62 +15,58 @@
 第一步，创建一个通知栏
 您需要创建一个通知栏，下面的代码是一个简单示例，具体请您根据自己的业务进行相关修改。
 
-Java
-private static final String NOTIFICATION_CHANNEL_NAME = "BackgroundLocation";
-private NotificationManager notificationManager = null;
-boolean isCreateChannel = false;
-@SuppressLint("NewApi")
-private Notification buildNotification() {
-
-	Notification.Builder builder = null;
-	Notification notification = null;
-	if(android.os.Build.VERSION.SDK_INT >= 26) {
-		//Android O上对Notification进行了修改，如果设置的targetSDKVersion>=26建议使用此种方式创建通知栏
-		if (null == notificationManager) {
-			notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+	private static final String NOTIFICATION_CHANNEL_NAME = "BackgroundLocation";
+	private NotificationManager notificationManager = null;
+	boolean isCreateChannel = false;
+	@SuppressLint("NewApi")
+	private Notification buildNotification() {
+		Notification.Builder builder = null;
+		Notification notification = null;
+		if(android.os.Build.VERSION.SDK_INT >= 26) {
+			//Android O上对Notification进行了修改，如果设置的targetSDKVersion>=26建议使用此种方式创建通知栏
+			if (null == notificationManager) {
+				notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			}
+			String channelId = getPackageName();
+			if(!isCreateChannel) {
+				NotificationChannel notificationChannel = new NotificationChannel(channelId,
+						NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+				notificationChannel.enableLights(true);//是否在桌面icon右上角展示小圆点
+				notificationChannel.setLightColor(Color.BLUE); //小圆点颜色
+				notificationChannel.setShowBadge(true); //是否在久按桌面图标时显示此渠道的通知
+				notificationManager.createNotificationChannel(notificationChannel);
+				isCreateChannel = true;
+			}
+			builder = new Notification.Builder(getApplicationContext(), channelId);
+		} else {
+			builder = new Notification.Builder(getApplicationContext());
 		}
-		String channelId = getPackageName();
-		if(!isCreateChannel) {
-			NotificationChannel notificationChannel = new NotificationChannel(channelId,
-					NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-			notificationChannel.enableLights(true);//是否在桌面icon右上角展示小圆点
-			notificationChannel.setLightColor(Color.BLUE); //小圆点颜色
-			notificationChannel.setShowBadge(true); //是否在久按桌面图标时显示此渠道的通知
-			notificationManager.createNotificationChannel(notificationChannel);
-			isCreateChannel = true;
-		}
-		builder = new Notification.Builder(getApplicationContext(), channelId);
-	} else {
-		builder = new Notification.Builder(getApplicationContext());
-	}
-	builder.setSmallIcon(R.drawable.ic_launcher)
-			.setContentTitle(Utils.getAppName(this))
-			.setContentText("正在后台运行")
-			.setWhen(System.currentTimeMillis());
+		builder.setSmallIcon(R.drawable.ic_launcher)
+				.setContentTitle(Utils.getAppName(this))
+				.setContentText("正在后台运行")
+				.setWhen(System.currentTimeMillis());
 
-	if (android.os.Build.VERSION.SDK_INT >= 16) {
-		notification = builder.build();
-	} else {
-		return builder.getNotification();
+		if (android.os.Build.VERSION.SDK_INT >= 16) {
+			notification = builder.build();
+		} else {
+			return builder.getNotification();
+		}
+		return notification;
 	}
-	return notification;
-}
 
 
 第二步，设置当调用后台定位接口时，显示通知栏
 在您的应用切到后台或者您需要显示前台通知的时候调用后台定位接口，显示前台服务通知栏。
 
-Java
-//启动后台定位，第一个参数为通知栏ID，建议整个APP使用一个
-locationClient.enableBackgroundLocation(2001, buildNotification());
+	//启动后台定位，第一个参数为通知栏ID，建议整个APP使用一个
+	locationClient.enableBackgroundLocation(2001, buildNotification());
 
 
 第三步，关闭后台定位以及通知栏
 当您不再需要通知栏时，请调用关闭后台定位接口
 
-Java
-//关闭后台定位，参数为true时会移除通知栏，为false时不会移除通知栏，但是可以手动移除
-
+	//关闭后台定位，参数为true时会移除通知栏，为false时不会移除通知栏，但是可以手动移除
+	locationClient.disableBackgroundLocation(true);
 
 # android 9.0上使用前台服务，需要添加权限
 
@@ -86,7 +82,8 @@ Java
 2.如果应用以 Android 10 或更高版本为目标平台，则它必须具有 ACCESS_FINE_LOCATION 权限才能使用 WLAN、WLAN 感知或蓝牙 API 中的一些方法。
 
 注意：如果您的应用在 Android 10 或更高版本平台上运行，但其目标平台是 Android 9（API 级别 28）或更低版本，则只要您的应用已声明 ACCESS_COARSE_LOCATION 或 ACCESS_FINE_LOCATION 权限，您就可以使用受影响的 API（WifiP2pManager API 除外）。
-locationClient.disableBackgroundLocation(true);
+
+	locationClient.disableBackgroundLocation(true);
 注意事项
 1、如果您的应用在切到后台时已经存在前台服务通知了，则不需再调用这个接口；
 
