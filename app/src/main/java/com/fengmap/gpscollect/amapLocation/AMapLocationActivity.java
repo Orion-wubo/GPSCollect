@@ -1,11 +1,14 @@
 package com.fengmap.gpscollect.amapLocation;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,8 +24,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.amap.api.location.AMapLocation;
 import com.fengmap.gpscollect.FileUtil;
@@ -104,34 +110,53 @@ public class AMapLocationActivity extends AppCompatActivity {
     }
 
     private void checkPermission(final boolean start) {
-        XXPermissions.with(this)
-                .permission(Permission.ACCESS_BACKGROUND_LOCATION)
-                .permission(Permission.ACCESS_COARSE_LOCATION)
-                .permission(Permission.ACCESS_FINE_LOCATION)
-                .permission(Permission.WRITE_EXTERNAL_STORAGE)
-                .request(new OnPermission() {
-                    @Override
-                    public void hasPermission(List<String> granted, boolean all) {
-                        if (all) {
-//                            Toast.makeText(MainActivity.this, "已经设置好", Toast.LENGTH_SHORT).show();
-                            if (start) {
-                                open();
-                                tv_status.setText("正在定位...");
-                            }
-                        } else {
-                            Toast.makeText(AMapLocationActivity.this, "获取权限成功，部分权限未正常授予", Toast.LENGTH_SHORT).show();
-                        }
-                    }
 
-                    @Override
-                    public void noPermission(List<String> denied, boolean never) {
-                        if (never) {
-                            Toast.makeText(AMapLocationActivity.this, "被永久拒绝授权，请手动授予位置和储存权限", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(AMapLocationActivity.this, "获取位置和储存权限失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+        boolean b = XXPermissions.hasPermission(this, new String[]{Permission.ACCESS_BACKGROUND_LOCATION,
+                Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION, Permission.WRITE_EXTERNAL_STORAGE});
+        if (b && start) {
+            open();
+            tv_status.setText("正在定位...");
+        } else {
+            AlertDialog.Builder alertDialogBuilder=new AlertDialog.Builder(this);
+            alertDialogBuilder.setTitle("权限申请");//设置标题
+            alertDialogBuilder.setMessage("本应用使用到后台定位，需要选择始终允许");
+
+            /*设置下方按钮*/
+            alertDialogBuilder.setPositiveButton("设置", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    XXPermissions.with(AMapLocationActivity.this)
+                            .permission(Permission.ACCESS_BACKGROUND_LOCATION)
+                            .permission(Permission.ACCESS_COARSE_LOCATION)
+                            .permission(Permission.ACCESS_FINE_LOCATION)
+                            .permission(Permission.WRITE_EXTERNAL_STORAGE)
+                            .request(new OnPermission() {
+                                @Override
+                                public void hasPermission(List<String> granted, boolean all) {
+                                    if (all) {
+                                        if (start) {
+                                            open();
+                                            tv_status.setText("正在定位...");
+                                        }
+                                    } else {
+                                        Toast.makeText(AMapLocationActivity.this, "获取权限成功，部分权限未正常授予", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void noPermission(List<String> denied, boolean never) {
+                                    if (never) {
+                                        Toast.makeText(AMapLocationActivity.this, "被永久拒绝授权，请手动授予位置和储存权限", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(AMapLocationActivity.this, "获取位置和储存权限失败", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
+            });
+            alertDialogBuilder.setCancelable(false);
+            alertDialogBuilder.show();
+        }
     }
 
     // Monitors the state of the connection to the service.
