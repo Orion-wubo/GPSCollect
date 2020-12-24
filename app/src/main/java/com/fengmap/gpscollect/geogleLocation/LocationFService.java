@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fengmap.gpscollect.googleLocation;
+package com.fengmap.gpscollect.geogleLocation;
 
 import android.app.ActivityManager;
 import android.app.Notification;
@@ -55,7 +55,7 @@ import com.fengmap.gpscollect.Utils;
  * continue. When the activity comes back to the foreground, the foreground service stops, and the
  * notification assocaited with that service is removed.
  */
-public class LocationFService extends Service implements LocationUtils.LocationCallBack {
+public class LocationFService extends Service implements GeoLocationUtils.LocationCallBack {
 
     private static final String PACKAGE_NAME =
             "com.fengmap.gpscollect";
@@ -107,14 +107,14 @@ public class LocationFService extends Service implements LocationUtils.LocationC
      * The current location.
      */
     private Location mLocation;
-    private LocationUtils locationUtils;
+    private GeoLocationUtils locationUtils;
 
     public LocationFService() {
     }
 
     @Override
     public void onCreate() {
-        locationUtils = LocationUtils.getInstance(this);
+        locationUtils = GeoLocationUtils.getInstance(this);
 
         HandlerThread handlerThread = new HandlerThread(TAG);
         handlerThread.start();
@@ -245,7 +245,7 @@ public class LocationFService extends Service implements LocationUtils.LocationC
 
         // The PendingIntent to launch activity.
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, LocationActivity.class), 0);
+                new Intent(this, GeoLocationActivity.class), 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .addAction(R.mipmap.ic_launch, getString(R.string.launch_activity),

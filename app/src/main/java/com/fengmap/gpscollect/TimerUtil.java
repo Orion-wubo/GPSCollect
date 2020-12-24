@@ -21,7 +21,7 @@ public class TimerUtil {
     public void start() {
         mTask = new SimulateTask();
         mTimer = new Timer();
-        mTimer.schedule(mTask, 0, 20*60*1000);
+        mTimer.schedule(mTask, 0, 10*60*1000);
     }
 
     public void stop() {
@@ -35,11 +35,6 @@ public class TimerUtil {
     public class SimulateTask extends TimerTask {
         @Override
         public void run() {
-            if (!Config.gpsSwitch) {
-                stop();
-                return;
-            }
-
             screenOn();
         }
     }

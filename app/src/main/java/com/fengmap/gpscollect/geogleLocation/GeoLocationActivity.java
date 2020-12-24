@@ -1,4 +1,4 @@
-package com.fengmap.gpscollect.googleLocation;
+package com.fengmap.gpscollect.geogleLocation;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -37,13 +37,13 @@ import com.hjq.permissions.XXPermissions;
 import java.util.List;
 
 
-public class LocationActivity extends AppCompatActivity {
+public class GeoLocationActivity extends AppCompatActivity {
 
     private TextView tv_info;
     private TextView tv_status;
     private Switch mSwitch;
     private Button white_list, back_permission, get_info;
-    private LocationService.MyBinder myBinder;
+    private LocationFService.LocalBinder myBinder;
     private ShowSettingUtil showSettingUtil;
     private FileUtil fileUtil;
     private LinearLayout pb;
@@ -91,7 +91,7 @@ public class LocationActivity extends AppCompatActivity {
                 if (!showSettingUtil.isIgnoringBatteryOptimizations()) {
                     showSettingUtil.requestIgnoreBatteryOptimizations();
                 } else {
-                    Toast.makeText(LocationActivity.this, "已经设置好", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GeoLocationActivity.this, "已经设置好", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -115,7 +115,7 @@ public class LocationActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 pb.setVisibility(View.GONE);
-                                Toast.makeText(LocationActivity.this, "获取完成，前往文件管理查找gpsCollection.txt文件查看",
+                                Toast.makeText(GeoLocationActivity.this, "获取完成，前往文件管理查找gpsCollection.txt文件查看",
                                         Toast.LENGTH_LONG).show();
                             }
                         });
@@ -141,16 +141,16 @@ public class LocationActivity extends AppCompatActivity {
                                 tv_status.setText("正在定位...");
                             }
                         } else {
-                            Toast.makeText(LocationActivity.this, "获取权限成功，部分权限未正常授予", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GeoLocationActivity.this, "获取权限成功，部分权限未正常授予", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void noPermission(List<String> denied, boolean never) {
                         if (never) {
-                            Toast.makeText(LocationActivity.this, "被永久拒绝授权，请手动授予位置和储存权限", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GeoLocationActivity.this, "被永久拒绝授权，请手动授予位置和储存权限", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(LocationActivity.this, "获取位置和储存权限失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GeoLocationActivity.this, "获取位置和储存权限失败", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

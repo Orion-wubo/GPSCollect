@@ -47,6 +47,7 @@ public class Utils {
 
     /**
      * Stores the location updates state in SharedPreferences.
+     *
      * @param requestingLocationUpdates The location updates state.
      */
     public static void setRequestingLocationUpdates(Context context, boolean requestingLocationUpdates) {
@@ -56,7 +57,8 @@ public class Utils {
 
     /**
      * Returns the {@code location} object as a human readable string.
-     * @param location  The {@link Location}.
+     *
+     * @param location The {@link Location}.
      */
     public static String getLocationText(Location location) {
         if (location == null) {
@@ -68,13 +70,21 @@ public class Utils {
             double longitude = location.getLongitude();
             float speed = location.getSpeed();
             float bearing = location.getBearing();
-            long time = location.getTime();
-            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-            Date curDate = new Date(time);
-            String curTime = formatter.format(curDate);
-            String content =
-                    "时间：" + curTime + "；经度：" + longitude + "；纬度：" + latitude + "；精度：" + accuracy + "；海拔：" + altitude + "；方位：" + bearing + "；速度：" + speed;
-            return content;
+            String curTime = getCurTime();
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("time", curTime);
+                obj.put("longitude", longitude);
+                obj.put("latitude", latitude);
+                obj.put("type", location.getProvider());
+                obj.put("accuracy", accuracy);
+                obj.put("altitude", altitude);
+                obj.put("bearing", bearing);
+                obj.put("speed", speed);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return obj.toString() + "\r\n";
         }
     }
 
@@ -94,7 +104,7 @@ public class Utils {
                 obj.put("time", curTime);
                 obj.put("longitude", longitude);
                 obj.put("latitude", latitude);
-                obj.put("type",getLocationType(location.getLocationType()) );
+                obj.put("type", getLocationType(location.getLocationType()));
                 obj.put("accuracy", accuracy);
                 obj.put("altitude", altitude);
                 obj.put("bearing", bearing);
@@ -102,7 +112,7 @@ public class Utils {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return obj.toString()+"\r\n";
+            return obj.toString() + "\r\n";
         }
     }
 
@@ -153,6 +163,6 @@ public class Utils {
         String result;
         result =
                 "时间: " + getCurTime() + ", ErrCode:" + location.getErrorCode() + ", errInfo:" + location.getErrorInfo();
-        return result+"\r\n";
+        return result + "\r\n";
     }
 }

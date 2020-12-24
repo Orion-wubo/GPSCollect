@@ -32,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.amap.api.location.AMapLocation;
 import com.fengmap.gpscollect.FileUtil;
+import com.fengmap.gpscollect.GCJ02ToWGS84Util;
 import com.fengmap.gpscollect.LocalBroadcastManager;
 import com.fengmap.gpscollect.R;
 import com.fengmap.gpscollect.ShowSettingUtil;
@@ -41,7 +42,12 @@ import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
+import java.util.Map;
 
 
 public class AMapLocationActivity extends AppCompatActivity {
@@ -107,15 +113,35 @@ public class AMapLocationActivity extends AppCompatActivity {
                 showSettingUtil.showSetting();
             }
         });
+
+
+        String s = fileUtil.readTextFromSDcard(this, "b.txt");
+        try {
+            JSONArray jsonArray = new JSONArray(s);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                double x = jsonObject.getDouble("x");
+                double y = jsonObject.getDouble("y");
+                Map<String, Double> stringDoubleMap = GCJ02ToWGS84Util.gcj2wgs(x, y);
+                JSONObject jsonObject1 = new JSONObject(stringDoubleMap);
+
+                fileUtil.write(jsonObject1.toString()+"\r\n");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void checkPermission(final boolean start) {
 
         boolean b = XXPermissions.hasPermission(this, new String[]{Permission.ACCESS_BACKGROUND_LOCATION,
                 Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION, Permission.WRITE_EXTERNAL_STORAGE});
-        if (b && start) {
-            open();
-            tv_status.setText("正在定位...");
+        if (b) {
+            if (start) {
+                open();
+                tv_status.setText("正在定位...");
+            }
         } else {
             AlertDialog.Builder alertDialogBuilder=new AlertDialog.Builder(this);
             alertDialogBuilder.setTitle("权限申请");//设置标题

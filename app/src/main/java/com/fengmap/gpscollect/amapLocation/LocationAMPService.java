@@ -36,9 +36,7 @@ import androidx.core.app.NotificationCompat;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.fengmap.gpscollect.FileUtil;
-import com.fengmap.gpscollect.GpsInfo;
 import com.fengmap.gpscollect.LocalBroadcastManager;
-import com.fengmap.gpscollect.googleLocation.LocationActivity;
 import com.fengmap.gpscollect.R;
 import com.fengmap.gpscollect.Utils;
 
@@ -256,6 +254,7 @@ public class LocationAMPService extends Service implements AMapLocationListener 
     private void onNewLocation(AMapLocation location) {
         // 设置坐标类型为84坐标系
         location.setCoordType(AMapLocation.COORD_TYPE_WGS84);
+        Log.e("location", location.toString());
 
         if (location != null) {
             if (location.getErrorCode() == 0) {

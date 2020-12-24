@@ -1,4 +1,4 @@
-package com.fengmap.gpscollect.googleLocation;
+package com.fengmap.gpscollect.geogleLocation;
 
 import android.content.Context;
 import android.location.Address;
@@ -18,7 +18,7 @@ import java.util.Locale;
  * Created by bai on 2018/8/13.
  */
 
-public class LocationUtils {
+public class GeoLocationUtils {
     // GPS定位
     private final static String GPS_LOCATION = LocationManager.GPS_PROVIDER;
     // 网络定位
@@ -30,7 +30,7 @@ public class LocationUtils {
     // 位置刷新距离，单位：m
     private final static float MIN_DISTANCE = (float) 0.01;
     // singleton
-    private static LocationUtils instance;
+    private static GeoLocationUtils instance;
     // 定位回调
     private LocationCallBack mLocationCallBack;
     // 定位管理实例
@@ -41,16 +41,16 @@ public class LocationUtils {
     /**
      * 构造函数
      */
-    private LocationUtils(Context mContext) {
+    private GeoLocationUtils(Context mContext) {
         this.mContext = mContext;
     }
 
     /**
      * singleton
      */
-    public static LocationUtils getInstance(Context mContext) {
+    public static GeoLocationUtils getInstance(Context mContext) {
         if (instance == null) {
-            instance = new LocationUtils(mContext);
+            instance = new GeoLocationUtils(mContext);
         }
         return instance;
     }

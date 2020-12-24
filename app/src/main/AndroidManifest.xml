@@ -26,22 +26,27 @@
 
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
+    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+
 
     <application
         android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="com.amap.api.v2.apikey" android:value="0168044afe3f7e7b8941a955ab284378">
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="0168044afe3f7e7b8941a955ab284378">
 
         </meta-data>
 
-        <activity android:name=".amapLocation.AMapLocationActivity"
+        <activity
+            android:name=".gpsLocation.MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,22 +54,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".gpsLocation.LocationService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="location">
-        </service>
-        <service android:name=".googleLocation.LocationFService"
+            android:foregroundServiceType="location"></service>
+        <service
+            android:name=".geogleLocation.LocationFService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="location" />
 
         <service android:name="com.amap.api.location.APSService"></service>
-        <service android:name=".amapLocation.LocationAMPService"
+        <service
+            android:name=".amapLocation.LocationAMPService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="location"/>
+            android:foregroundServiceType="location" />
+
+        <receiver android:name=".gpsLocation.MainActivity$ScreenControlAlarmReceiver">
+            <intent-filter>
+                <action android:name="intent_alarm_log" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
