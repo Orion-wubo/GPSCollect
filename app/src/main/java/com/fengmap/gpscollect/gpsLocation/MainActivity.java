@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tv_info;
     private TextView tv_status;
-    private Switch mSwitch;
+    private Switch mSwitch,net_open;
     private Button white_list, back_permission;
     private ShowSettingUtil showSettingUtil;
     private FileUtil fileUtil;
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         tv_status = findViewById(R.id.tv_status);
         tv_info = findViewById(R.id.tv_info);
         mSwitch = findViewById(R.id.open);
+        net_open = findViewById(R.id.net_open);
         white_list = findViewById(R.id.white_list);
         back_permission = findViewById(R.id.back_permission);
         pb = findViewById(R.id.pb);
@@ -84,6 +85,17 @@ public class MainActivity extends AppCompatActivity {
                     checkPermission(true);
                 } else {
                     close();
+                }
+            }
+        });
+
+        net_open.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    LocationUtil.isNeedNetworkLocation = true;
+                } else {
+                    LocationUtil.isNeedNetworkLocation = false;
                 }
             }
         });
