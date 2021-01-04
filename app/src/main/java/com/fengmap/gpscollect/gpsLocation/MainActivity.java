@@ -92,6 +92,11 @@ public class MainActivity extends AppCompatActivity {
         net_open.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mSwitch.isChecked()) {
+                    Toast.makeText(MainActivity.this,"请先关闭定位后再设置此项",Toast.LENGTH_SHORT).show();
+                    net_open.setChecked(!isChecked);
+                    return;
+                }
                 if (isChecked) {
                     LocationUtil.isNeedNetworkLocation = true;
                 } else {

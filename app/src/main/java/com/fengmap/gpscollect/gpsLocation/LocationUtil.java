@@ -40,7 +40,11 @@ public class LocationUtil implements LocationListener {
         mCriteria.setSpeedRequired(true);
 
         gpsProvider = mLocationManager.getBestProvider(mCriteria, true); //获取GPS信息
-        Log.e("best provider", gpsProvider);
+        if (gpsProvider != null) {
+            Log.e("best provider", gpsProvider);
+        } else {
+            Log.e("provider", "bestProvider is null");
+        }
     }
 
 
