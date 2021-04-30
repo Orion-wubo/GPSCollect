@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fengmap.gpscollect.AlarmUtil;
 import com.fengmap.gpscollect.FileUtil;
+import com.fengmap.gpscollect.GCJ02ToWGS84Util;
 import com.fengmap.gpscollect.LocalBroadcastManager;
 import com.fengmap.gpscollect.R;
 import com.fengmap.gpscollect.ShowSettingUtil;
@@ -37,7 +38,12 @@ import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -124,21 +130,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-//        String s = fileUtil.readTextFromSDcard(this, "b.txt");
-//        try {
-//            JSONArray jsonArray = new JSONArray(s);
-//            for (int i = 0; i < jsonArray.length(); i++) {
-//                JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                double x = jsonObject.getDouble("x");
-//                double y = jsonObject.getDouble("y");
-//                Map<String, Double> stringDoubleMap = GCJ02ToWGS84Util.gcj2wgs(x, y);
-//                JSONObject jsonObject1 = new JSONObject(stringDoubleMap);
-//
-//                fileUtil.write(jsonObject1.toString()+"\r\n");
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+        String s = fileUtil.readTextFromSDcard(this, "gpsCollection.txt");
+        try {
+            JSONArray jsonArray = new JSONArray(s);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                double x = jsonObject.getDouble("longitude");
+                double y = jsonObject.getDouble("latitude");
+                Map<String, Double> stringDoubleMap = GCJ02ToWGS84Util.gcj2wgs(x, y);
+                JSONObject jsonObject1 = new JSONObject(stringDoubleMap);
+
+                fileUtil.write(jsonObject1.toString()+"\r\n");
+            }
+        } catch (JSONException e) {
+            Log.e("write", e.toString());
+            e.printStackTrace();
+        }
 
 
 
